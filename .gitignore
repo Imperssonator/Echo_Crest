@@ -1,0 +1,11 @@
+**/*.CSV
+*.CSV
+*.mat
+**/*.mat
+UVApp/*
+*.prj
+*.wav
+**/*.wav
+*.DX
+*.SD
+*.xlsx

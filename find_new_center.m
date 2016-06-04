@@ -70,7 +70,7 @@ Psi = [];
 R = [];
 R_i = zeros(1,numDims);
 while Psi_r<1
-    disp(Psi_r)
+%     disp(Psi_r)
     InRange = zeros(size(C));
     LB = L.cent-R_i; UB = L.cent+R_i;
     for n = 1:numDims

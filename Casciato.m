@@ -1,6 +1,6 @@
 % Casciato Data
-cx = [60 60 90 120 120 150]';
-cy = [18.3 17.8 24.3 44 47.5 51.8]';
+% cx = [60 60 90 120 120 150]';
+% cy = [18.3 17.8 24.3 44 47.5 51.8]';
 
 % Wire Data
 % cx=[2 8 11 10 8 4 2 2 9 8 4 11 12 2 4 4 20 1 10 15 15 16 17 6 5; 50 110 120 550 295 200 375 52 100 300 412 400 500 360 205 400 600 585 540 250 290 510 590 100 400]';
@@ -44,8 +44,8 @@ posCIfun = @(xi) mfun(xi)+bestmod.meanCIfun(xi);
 negCIfun = @(xi) mfun(xi)-bestmod.meanCIfun(xi);
 
 % L metric
-T = 40; % Target
-d=5; % Tolerance
+T = 0.1; % Target
+d=0.01; % Tolerance
 Lfun = @(xi) max(abs(T-posCIfun(xi)),abs(T-negCIfun(xi)));
 [x_star, L_star] = fminsearch(Lfun,mean(bestmod.Data,1));
 disp('L* = '); disp(L_star)
@@ -69,24 +69,24 @@ figure; plot((1:length(L2.Psi))',L2.Psi,'-b');
 % Adaptive Combined Design
 % L2 = ACD(L2,reg);
 
-% Plot Data and both fits
-f1 = figure;
-ax = gca;
-hold(ax,'on')
-hdata = plot(ax,cx,cy,'og');
-plot_range = [min(cx)-0.1*range(cx), max(cx)+0.1*range(cx)];
-fplot(ax,mfun,plot_range);
-% fplot(ax,cfun2,[min(cx)-10,max(cx)+10],'-c');
-color = uint8([0 150 50]);
-hdata.MarkerFaceColor = color;
-hdata.MarkerEdgeColor = color;
-hdata.MarkerSize = 10;
+% % Plot Data and both fits
+% f1 = figure;
+% ax = gca;
+% hold(ax,'on')
+% hdata = plot(ax,cx,cy,'og');
+% plot_range = [min(cx)-0.1*range(cx), max(cx)+0.1*range(cx)];
+% fplot(ax,mfun,plot_range);
+% % fplot(ax,cfun2,[min(cx)-10,max(cx)+10],'-c');
+% color = uint8([0 150 50]);
+% hdata.MarkerFaceColor = color;
+% hdata.MarkerEdgeColor = color;
+% hdata.MarkerSize = 10;
 
-% Plot mean intervals
-fplot(ax, posCIfun,plot_range,'-.k')
-fplot(ax, negCIfun,plot_range,'-.k')
-
-% Plot L function and target
-fplot(ax, @(x) T,plot_range,'-r')
-fplot(ax, Lfun,plot_range,'-b')
+% % Plot mean intervals
+% fplot(ax, posCIfun,plot_range,'-.k')
+% fplot(ax, negCIfun,plot_range,'-.k')
+% 
+% % Plot L function and target
+% fplot(ax, @(x) T,plot_range,'-r')
+% fplot(ax, Lfun,plot_range,'-b')
 
