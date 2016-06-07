@@ -1,6 +1,10 @@
-function pts = steep_descent(Data,R,h)
+function pts = steep_descent(options)
 
 % h is the space
+% hFun is a handle to the objective function, which should take a matrix of
+% the same dimension as 'Data' and return a one dimensional response. It
+% could be a function that simply shows the user the desired runs and
+% requests the response variables...
 
 numOpts = 500;
 numDims = size(Data,2);
@@ -38,7 +42,7 @@ end
 cent = mean(Data,1);
 pts = cent;
 for p = 1:20
-    pts = [pts; cent-gg.*h*p];
+    pts = [pts; cent-gg.*step*p];
 end
 
 end
