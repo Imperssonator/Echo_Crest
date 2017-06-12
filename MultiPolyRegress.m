@@ -186,6 +186,14 @@ function reg = MultiPolyRegress(Data,R,PW,varargin)
         'Normalization',NormalizationSwitch,'LOOCVGoodnessOfFit','-----------------', 'CVRSquare', ...
         CVr2, 'CVMAE', CVmae, 'CVMAESTD', CVmaestd,'CVNormalization',NormalizationSwitch,'Data',Data,'y',R,'Warning',WARNING);
     
+    % Generate model output function
+    mfun = @(xi) sum(reg.Coefficients.*prod(repmat(xi,size(reg.PowerMatrix,1),1).^reg.PowerMatrix,2));
+    reg.modelFun = mfun;
+    
+    % Get Goodness-of-Fit Measures, Confidence Interval Functions
+    reg = fit_measures(reg);
+    reg = conf_int(reg);
+    
     % Optional Figure
     if strcmp(FigureSwitch,'figureon')==1
         figure1 = figure;
@@ -203,6 +211,42 @@ function reg = MultiPolyRegress(Data,R,PW,varargin)
         axis square
         grid on
     end
+end
+
+function reg = fit_measures(reg)
+
+% mu_e is number of repetitions of each data point
+% prior is the prior probability of the model
+
+mu_e = 1;
+prior = 1;
+
+n = size(reg.Residuals,1); reg.n = n;
+p = size(reg.Coefficients,1); reg.p = p;
+dof = n-p; reg.dof = dof;
+
+reg.MSE = sum(reg.Residuals.^2)/n;
+reg.model_var = sum(reg.Residuals.^2)/(n-p);
+reg.AIC = n*(log(2*pi()*reg.MSE) + 1) + 2*p;
+reg.PB = prior * 2^(-p/2) * reg.MSE^(-mu_e/2);
+
+end
+
+function reg = conf_int(reg)
+
+% alpha = degree of confidence for t dist... default 0.05
+
+alpha = 0.05;
+
+% Now Compute Z, the model fit at each of the X and Y points
+
+f_x = @(xi) prod(repmat(xi,size(reg.PowerMatrix,1),1).^reg.PowerMatrix,2);
+
+reg.meanCIfun = @(x) tinv(1-alpha/2,reg.dof)*sqrt((f_x(x)'*inv(reg.X'*reg.X)*f_x(x))*reg.model_var);
+reg.predCIfun = @(x) tinv(1-alpha/2,reg.dof)*sqrt((1+f_x(x)'*inv(reg.X'*reg.X)*f_x(x))*reg.model_var);
+reg.CIoptpt = fminsearch(reg.meanCIfun,mean(reg.Data,1));
+reg.CIoptval = reg.predCIfun(reg.CIoptpt);
+
 end
     
     

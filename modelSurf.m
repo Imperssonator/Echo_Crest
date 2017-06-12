@@ -26,3 +26,5 @@ hsurf = surf(ax,X,Y,Z);
 hsurf.EdgeAlpha = 0;
 hsurf.FaceAlpha = 0.6;
 ax.ZLim = zl;
+
+hold(ax,'off')
